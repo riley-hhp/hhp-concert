@@ -1,3 +1,17 @@
+
+
+
+## **`STEP 07`**
+## [API Swagger](docs/SWAGGER.png)
+
+
+
+---
+
+---
+
+---
+
 ## **`STEP 05`**
 - 시나리오 선정 및 프로젝트 Milestone 제출
 - 시나리오 요구사항 별 분석 자료 제출
@@ -9,7 +23,7 @@
 
 
 ---
-## **`STEP 06`**
+_## **`STEP 06`**
 - ERD 설계 자료 제출
 - API 명세 및 Mock API 작성
 - 자료들을 리드미에 작성 후 PR링크 제출 ( 채택할 기본 패키지 구조, 기술 스택 등 )
@@ -36,5 +50,5 @@ src
 ### 기술 스택
 - JDK17
 - Spring Boot
-- Spring Data JPA
+- Spring Data JPA_
 - H2
