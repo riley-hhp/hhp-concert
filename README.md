@@ -24,10 +24,12 @@ src
  └── main
      └── java
          └── io.hhplus.concert
-             ├── application
-             ├── domain
-             ├── infrastructure
-             └── interfaces
+            └── app
+                ├── application
+                ├── domain
+                ├── infra
+                └── api
+            └── config
                  
 ```
 
@@ -35,4 +37,4 @@ src
 - JDK17
 - Spring Boot
 - Spring Data JPA
-- MySQL
+- H2
