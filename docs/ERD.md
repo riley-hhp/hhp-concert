@@ -5,25 +5,24 @@ erDiagram
     USER {
         bigint id
         string name
-        string password
         datetime createdAt
         datetime updatedAt
     }
 
     QUEUE {
         bigint id
-        bigint userId
         string token
         string status
         datetime createdAt
+        datetime expiredAt
         datetime updatedAt
     }
 
     CONCERT {
         bigint id
         string title
-        datetime startDate
-        datetime endDate
+        datetime startAt
+        datetime endAt
         datetime createdAt
         datetime updatedAt
     }
@@ -32,7 +31,7 @@ erDiagram
         bigint id
         bigint concertId       
         string sessionTitle
-        datetime sessionDate
+        datetime sessionAt
         string location
         datetime createdAt
         datetime updatedAt
@@ -53,7 +52,7 @@ erDiagram
         bigint userId    
         bigint reservationId    
         decimal totalAmount
-        datetime paymentDate
+        datetime paymentAt
         string status
         datetime createdAt
         datetime updatedAt
@@ -65,7 +64,7 @@ erDiagram
         bigint paymentId
         bigint concertItemId
         bigint seatId
-        datetime reservationDate
+        datetime reservationAt
         string status
         datetime createdAt
         datetime updatedAt
@@ -77,6 +76,16 @@ erDiagram
         decimal balance
         datetime createdAt
         datetime updatedAt
+    } 
+    
+    POINT_HISTORY {
+        bigint id
+        bigint pointId     
+        decimal amount
+        string transactionType
+        string description
+        datetime createdAt
+        datetime updatedAt
     }
 
     %% Relationships
@@ -84,9 +93,9 @@ erDiagram
     CONCERT ||--o{ CONCERT_ITEM : "contains"
     CONCERT_ITEM ||--o{ SEAT : "contains"
 
-    USER ||--o{ QUEUE : "enter into"
-    USER ||--o{ PAYMENT : "makes"
+    POINT ||--o| PAYMENT : "paid"
     USER ||--o{ POINT : "has"
+    POINT ||--o{ POINT_HISTORY : "has"
     PAYMENT ||--o| RESERVATION : "is associated with"
 
 
