@@ -30,6 +30,7 @@ dependencies {
     // JPA
     implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly ("com.h2database:h2")
+    implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 }
 
 // about source and compilation
@@ -53,3 +54,4 @@ tasks.test {
     ignoreFailures = true
     useJUnitPlatform()
 }
+
