@@ -66,4 +66,8 @@ public class PointService {
                                             .build();
         pointRepository.save(history);
     }
+
+    public void save(Point point) {
+        pointRepository.save(point);
+    }
 }

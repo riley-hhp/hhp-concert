@@ -30,7 +30,7 @@ public class ConcertCoreRepository implements ConcertRepository {
     public List<ConcertItem> findAvailableConcertItems(long concertId) {
 
         findConcertById(concertId);
-        return concertItemJpaRepository.findByConcertIdAndSessionAtBeforeAndCapacityGreaterThan(
+        return concertItemJpaRepository.findByConcertIdAndSessionAtAfterAndCapacityGreaterThan(
                 concertId, LocalDateTime.now(), 0);
     }
 
@@ -112,6 +112,26 @@ public class ConcertCoreRepository implements ConcertRepository {
             reservation.setStatus(ReservationStatus.FAIL);
             reservationJpaRepository.save(reservation);
         }
+    }
+
+    @Override
+    public Reservation findReservationByUserId(long userId) {
+        return reservationJpaRepository.findByUserId(userId).orElseThrow( () -> new RuntimeException("해당 사용자의 예약이 없습니다."));
+    }
+
+    @Override
+    public void save(Concert concert) {
+        concertJpaRepository.save(concert);
+    }
+
+    @Override
+    public void save(ConcertItem concertItem) {
+        concertItemJpaRepository.save(concertItem);
+    }
+
+    @Override
+    public void save(Seat seat) {
+        seatJpaRepository.save(seat);
     }
 
 }

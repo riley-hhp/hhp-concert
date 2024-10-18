@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface ConcertItemJpaRepository extends JpaRepository<ConcertItem, Long> {
 
-    List<ConcertItem> findByConcertIdAndSessionAtBeforeAndCapacityGreaterThan(long concertId, LocalDateTime now, int capacity);
+    List<ConcertItem> findByConcertIdAndSessionAtAfterAndCapacityGreaterThan(long concertId, LocalDateTime now, int capacity);
 }

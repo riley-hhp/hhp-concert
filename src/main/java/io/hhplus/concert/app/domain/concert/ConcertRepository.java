@@ -8,6 +8,8 @@ import java.util.List;
 @Repository
 public interface ConcertRepository {
 
+
+
     // 콘서트 ID로 콘서트 조회
     Concert findConcertById(long concertId);
 
@@ -26,4 +28,9 @@ public interface ConcertRepository {
     // 만료된 예약 취소
     void cancelExpiredReservations();
 
+    Reservation findReservationByUserId(long userId);
+
+    void save(Concert concert);
+    void save(ConcertItem concertItem);
+    void save(Seat seat);
 }
