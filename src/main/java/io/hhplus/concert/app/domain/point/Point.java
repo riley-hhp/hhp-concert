@@ -15,12 +15,8 @@ import lombok.*;
 @AllArgsConstructor
 public class Point extends BaseTimeEntity {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    long id;
-    @Setter
     long userId;
-    @Setter
     double balance;
 
     // 포인트 충전

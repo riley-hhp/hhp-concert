@@ -15,4 +15,9 @@ public interface ReservationJpaRepository extends JpaRepository<Reservation, Lon
     List<Reservation> findAllByStatusAndReservedAtBefore( ReservationStatus status, LocalDateTime reservedAt );
 
     Optional<Reservation> findByUserId(long userId);
+    Optional<Reservation> findById(long id);
+
+    List<Reservation> findBySeatId(Long seatId);
+
+    List<Reservation> findByExpiredAtBefore(LocalDateTime now);
 }

@@ -27,8 +27,8 @@ dependencies {
     annotationProcessor(libs.lombok)
     annotationProcessor(libs.spring.boot.configuration.processor)
     testImplementation(libs.spring.boot.starter.test)
-    // JPA
     implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation ("org.springframework.boot:spring-boot-starter-jdbc")
     runtimeOnly ("com.h2database:h2")
     implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 }

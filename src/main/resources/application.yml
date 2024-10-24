@@ -7,8 +7,8 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-#    url: jdbc:h2:mem:testdb  # 'testdb'는 원하는 이름으로 설정 가능
-    url: jdbc:h2:tcp://localhost/~/test
+    url: jdbc:h2:mem:testdb  # 'testdb'는 원하는 이름으로 설정 가능
+#    url: jdbc:h2:tcp://localhost/~/test
     username: sa
     password:
   jpa:
@@ -19,7 +19,12 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         show_sql: true # SQL 쿼리 출력 여부
         format_sql: true # SQL 쿼리 포맷팅 여부
-
+    defer-datasource-initialization: true # 데이터 베이스 초기화 시점을 지연
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      data-locations: classpath:sql/data.sql
 springdoc:
   api-docs:
     path: /api-docs

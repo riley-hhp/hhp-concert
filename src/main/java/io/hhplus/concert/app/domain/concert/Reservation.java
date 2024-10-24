@@ -19,11 +19,11 @@ public class Reservation extends BaseTimeEntity {
     @Id
     long id;
     long userId;
-
     @Setter
     long paymentId;
     long concertItemId;
     long seatId;
+    double price;
     LocalDateTime reservedAt;
     LocalDateTime expiredAt;
 
@@ -31,10 +31,4 @@ public class Reservation extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     ReservationStatus status;
 
-    public Reservation(long l, long userId, long concertItemId, long seatId) {
-        this.id=l;
-        this.userId = userId;
-        this.concertItemId = concertItemId;
-        this.seatId=seatId;
-    }
 }

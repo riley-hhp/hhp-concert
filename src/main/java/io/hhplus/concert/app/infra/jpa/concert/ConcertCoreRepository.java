@@ -2,6 +2,7 @@ package io.hhplus.concert.app.infra.jpa.concert;
 
 import io.hhplus.concert.app.domain.concert.*;
 import io.hhplus.concert.app.domain.payment.Payment;
+import io.hhplus.concert.app.infra.jpa.payment.PaymentJpaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,7 @@ public class ConcertCoreRepository implements ConcertRepository {
     private final ConcertItemJpaRepository concertItemJpaRepository;
     private final SeatJpaRepository seatJpaRepository;
     private final ReservationJpaRepository reservationJpaRepository;
+    private final PaymentJpaRepository paymentJpaRepository;
 
 
     // 콘서트 ID로 콘서트 조회
@@ -62,6 +64,7 @@ public class ConcertCoreRepository implements ConcertRepository {
                                              .userId(userId)
                                              .concertItemId(concertItemId)
                                              .seatId(seatId)
+                                             .price(seat.getPrice())
                                              .reservedAt(LocalDateTime.now())
                                              .status(ReservationStatus.TEMP)
                                              .build();
@@ -71,7 +74,7 @@ public class ConcertCoreRepository implements ConcertRepository {
     }
 
     @Transactional
-    public void confirmReservation(long reservationId, Payment payment) {
+    public Reservation confirmReservation(long reservationId, Payment payment) {
 
         Reservation reservation = reservationJpaRepository.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("예약을 찾을 수 없습니다."));
@@ -90,6 +93,7 @@ public class ConcertCoreRepository implements ConcertRepository {
         else {
             throw new RuntimeException("결제 시간이 초과되었습니다.");
         }
+        return reservation;
     }
 
     @Transactional
@@ -120,6 +124,11 @@ public class ConcertCoreRepository implements ConcertRepository {
     }
 
     @Override
+    public Reservation findReservationById(long reservationId) {
+        return reservationJpaRepository.findById(reservationId).orElseThrow(()-> new RuntimeException("해당 예약이 없습니다."));
+    }
+
+    @Override
     public void save(Concert concert) {
         concertJpaRepository.save(concert);
     }
@@ -132,6 +141,27 @@ public class ConcertCoreRepository implements ConcertRepository {
     @Override
     public void save(Seat seat) {
         seatJpaRepository.save(seat);
+    }
+
+    @Override
+    public void deleteAll() {
+        reservationJpaRepository.deleteAll();
+        paymentJpaRepository.deleteAll();
+        seatJpaRepository.deleteAll();
+        concertItemJpaRepository.deleteAll();
+        concertJpaRepository.deleteAll();
+    }
+
+    @Override
+    public List<Reservation> findReservationsBySeatId(Long seatId) {
+        return reservationJpaRepository.findBySeatId(seatId);
+    }
+
+    @Override
+    public List<Reservation> findExpiredReservations() {
+        // 현재 시간을 기준으로 만료된 예약을 조회
+        LocalDateTime now = LocalDateTime.now();
+        return reservationJpaRepository.findByExpiredAtBefore(now);
     }
 
 }

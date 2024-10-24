@@ -20,6 +20,7 @@ public class WaitingQueue extends BaseTimeEntity {
     private long id;
     private long concertId;
     private String token;
+    @Setter
     private LocalDateTime expiredAt;
 
     @Enumerated(EnumType.STRING)
@@ -29,9 +30,9 @@ public class WaitingQueue extends BaseTimeEntity {
     public static WaitingQueue issue(long concertId) {
 
         return WaitingQueue.builder()
-                           .token(UUID.randomUUID().toString())
-                           .status(WaitingQueueStatus.WAITING)
-                           .concertId(concertId).build();
+                .token(UUID.randomUUID().toString())
+                .status(WaitingQueueStatus.WAITING)
+                .concertId(concertId).build();
     }
 
     public WaitingQueue activate() {

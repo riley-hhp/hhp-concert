@@ -33,9 +33,9 @@ public class WaitingQueueCoreRepository implements WaitingQueueRepository {
     public void activeToken() {
 
         List<WaitingQueue> toActiveList = waitingQueJpaRepository.findTop10ByStatusOrderByCreatedAtAsc(WaitingQueueStatus.WAITING)
-                                                                    .stream()
-                                                                    .map(WaitingQueue::activate)
-                                                                    .toList();
+                                                                 .stream()
+                                                                 .map(WaitingQueue::activate)
+                                                                 .toList();
         waitingQueJpaRepository.saveAll(toActiveList);
     }
 
@@ -43,9 +43,24 @@ public class WaitingQueueCoreRepository implements WaitingQueueRepository {
     public void expireToken() {
 
         List<WaitingQueue> toExpireList = waitingQueJpaRepository.findByExpiredAtBefore(LocalDateTime.now())
-                                                                .stream()
-                                                                .map(WaitingQueue::expire)
-                                                                .toList();
+                                                                 .stream()
+                                                                 .map(WaitingQueue::expire)
+                                                                 .toList();
         waitingQueJpaRepository.saveAll(toExpireList);
+    }
+
+    @Override
+    public List<WaitingQueue> findAll() {
+        return waitingQueJpaRepository.findAll();
+    }
+
+    @Override
+    public void deleteAll() {
+        waitingQueJpaRepository.deleteAll();
+    }
+
+    @Override
+    public void save(WaitingQueue waitingQueue) {
+        waitingQueJpaRepository.save(waitingQueue);
     }
 }

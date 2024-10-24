@@ -42,8 +42,8 @@ public class ConcertReservationController {
             @RequestParam long concertItemId,
             @RequestParam long seatId) {
 
-        concertUseCase.reserveSeatAndPay(userId, concertItemId, seatId);
-        return ResponseEntity.ok().build();
+        Reservation reservation = concertUseCase.reserveSeatAndPay(userId, concertItemId, seatId);
+        return ResponseEntity.ok(reservation);
     }
 
     // 만료된 예약 취소 API

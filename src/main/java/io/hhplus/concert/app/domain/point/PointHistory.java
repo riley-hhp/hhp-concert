@@ -8,6 +8,8 @@ import lombok.*;
 @Builder
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class PointHistory extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

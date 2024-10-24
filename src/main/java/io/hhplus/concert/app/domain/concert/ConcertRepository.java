@@ -23,14 +23,21 @@ public interface ConcertRepository {
     Reservation createTemporaryReservation(long userId, long concertItemId, long seatId);
 
     // 예약 확정
-    void confirmReservation(long reservationId, Payment payment);
+    Reservation confirmReservation(long reservationId, Payment payment);
 
     // 만료된 예약 취소
     void cancelExpiredReservations();
 
     Reservation findReservationByUserId(long userId);
+    Reservation findReservationById(long reservationId);
 
     void save(Concert concert);
     void save(ConcertItem concertItem);
     void save(Seat seat);
+
+    void deleteAll();
+
+    List<Reservation> findReservationsBySeatId(Long seatId);
+
+    List<Reservation> findExpiredReservations();
 }
