@@ -11,11 +11,11 @@ import lombok.*;
 @Builder
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Point extends BaseTimeEntity {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    long id;
     long userId;
     double balance;
 

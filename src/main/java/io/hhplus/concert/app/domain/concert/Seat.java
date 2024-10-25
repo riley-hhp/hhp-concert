@@ -3,14 +3,15 @@ package io.hhplus.concert.app.domain.concert;
 import io.hhplus.concert.app.domain.payment.Payment;
 import io.hhplus.concert.config.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Seat extends BaseTimeEntity {
 
     @Column(name = "SEAT_ID")
@@ -25,6 +26,7 @@ public class Seat extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "CONCERT_ITEM_ID")
+    @ToString.Exclude
     ConcertItem concertItem;
 
     public Seat(long l, long l1) {

@@ -1,8 +1,7 @@
 package io.hhplus.concert.app.domain.concert;
 
 import io.hhplus.concert.config.BaseTimeEntity; import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,6 +11,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class ConcertItem extends BaseTimeEntity {
 
     @Column(name = "CONCERT_ITEM_ID")
@@ -25,6 +26,7 @@ public class ConcertItem extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "CONCERT_ID")
+    @ToString.Exclude
     Concert concert;
 
     @OneToMany(mappedBy = "concertItem")

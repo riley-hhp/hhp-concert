@@ -15,13 +15,13 @@ import static org.mockito.Mockito.when;
 
 @DisplayName(value = "WaitingQueueService 단위 테스트")
 @ExtendWith(MockitoExtension.class)
-class WaitingQueueServiceTest {
+class WaitingQueueUseCaseTest {
 
     @Mock
     WaitingQueueCoreRepository waitingQueueCoreRepository;
 
     @InjectMocks
-    WaitingQueueService waitingQueueService;
+    WaitingQueueService waitingQueueUseCase;
 
     @Test
     void 토큰_발급_성공() {
@@ -35,7 +35,7 @@ class WaitingQueueServiceTest {
         when(waitingQueueCoreRepository.issueToken(concertId)).thenReturn(expectedQueue);
 
         // When
-        WaitingQueue actualQueue = waitingQueueService.issueToken(concertId);
+        WaitingQueue actualQueue = waitingQueueUseCase.issueToken(concertId);
 
         // Then
         assertThat(actualQueue.getToken()).isEqualTo(expectedQueue.getToken());
@@ -54,7 +54,7 @@ class WaitingQueueServiceTest {
         when(waitingQueueCoreRepository.getToken(token)).thenReturn(expectedQueue);
 
         // When
-        WaitingQueue actualQueue = waitingQueueService.getToken(token);
+        WaitingQueue actualQueue = waitingQueueUseCase.getToken(token);
 
         // Then
         assertThat(actualQueue.getToken()).isEqualTo(expectedQueue.getToken());
@@ -64,19 +64,19 @@ class WaitingQueueServiceTest {
     void 토큰_활성화_성공() {
 
         // When
-        waitingQueueService.activeToken();
+        waitingQueueUseCase.activeToken();
 
         // Then
-         verify(waitingQueueCoreRepository).activeToken();
+        verify(waitingQueueCoreRepository).activeToken();
     }
 
     @Test
     void 토큰_만료_성공() {
 
         // When
-        waitingQueueService.expireToken();
+        waitingQueueUseCase.expireToken();
 
         // Then
-         verify(waitingQueueCoreRepository).expireToken();
+        verify(waitingQueueCoreRepository).expireToken();
     }
 }

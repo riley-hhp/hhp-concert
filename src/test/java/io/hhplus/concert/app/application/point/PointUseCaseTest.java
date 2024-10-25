@@ -3,7 +3,6 @@ package io.hhplus.concert.app.application.point;
 import io.hhplus.concert.app.domain.point.Point;
 import io.hhplus.concert.app.domain.point.PointHistory;
 import io.hhplus.concert.app.domain.point.PointRepository;
-import io.hhplus.concert.app.domain.point.TransactionType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,10 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PointServiceTest {
+class PointUseCaseTest {
 
     @InjectMocks
-    private PointService pointService;
+    private PointService pointUseCase;
 
     @Mock
     private PointRepository pointRepository;
@@ -29,10 +28,7 @@ class PointServiceTest {
 
     @BeforeEach
     void setUp() {
-        point = Point.builder()
-                .userId(1L)
-                .balance(1000)
-                .build();
+        point = Point.builder().userId(1L).balance(1000).build();
     }
 
     @Test
@@ -41,7 +37,7 @@ class PointServiceTest {
         when(pointRepository.findPoinByUserId(1L)).thenReturn(Optional.of(point));
 
         // when
-        int balance = pointService.getUserPoints(1L);
+        int balance = pointUseCase.getUserPoints(1L);
 
         // then
         assertEquals(1000, balance);
@@ -54,7 +50,7 @@ class PointServiceTest {
 
         // when & then
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            pointService.getUserPoints(1L);
+            pointUseCase.getUserPoints(1L);
         });
         assertEquals("사용자의 포인트를 찾을 수 없습니다.", exception.getMessage());
     }
@@ -65,7 +61,7 @@ class PointServiceTest {
         when(pointRepository.findPoinByUserId(1L)).thenReturn(Optional.of(point));
 
         // when
-        pointService.chargePoints(1L, 500);
+        pointUseCase.chargePoints(1L, 500);
 
         // then
         assertEquals(1500, point.getBalance());
@@ -80,7 +76,7 @@ class PointServiceTest {
 
         // when & then
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            pointService.chargePoints(1L, 500);
+            pointUseCase.chargePoints(1L, 500);
         });
         assertEquals("사용자의 포인트 정보를 찾을 수 없습니다.", exception.getMessage());
     }
@@ -92,7 +88,7 @@ class PointServiceTest {
 
         // when & then
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            pointService.usePoints(1L, 1500); // 잔액보다 많은 포인트 사용 요청
+            pointUseCase.usePoints(1L, 1500); // 잔액보다 많은 포인트 사용 요청
         });
         assertEquals("포인트가 부족합니다.", exception.getMessage());
     }
@@ -103,7 +99,7 @@ class PointServiceTest {
         when(pointRepository.findPoinByUserId(1L)).thenReturn(Optional.of(point));
 
         // when
-        pointService.usePoints(1L, 500);
+        pointUseCase.usePoints(1L, 500);
 
         // then
         assertEquals(500, point.getBalance());

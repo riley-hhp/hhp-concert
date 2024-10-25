@@ -17,6 +17,15 @@ public class PaymentCoreRepository implements PaymentRepository {
     public Optional<Payment> findById(long paymentId) {
         return paymentJpaRepository.findById(paymentId);
     }
+    @Override
+    public Optional<Payment> findByUserId(long userId) {
+        return paymentJpaRepository.findByUserId(userId);
+    }
+
+    @Override
+    public Optional<Payment> findByReservationId(long reservationId) {
+        return paymentJpaRepository.findByReservationId(reservationId);
+    }
 
     @Override
     public Payment save(Payment payment) {

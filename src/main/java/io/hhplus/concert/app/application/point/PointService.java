@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class PointService {
+public class PointService implements PointUseCase {
 
     private final PointRepository pointRepository;
 
@@ -66,4 +66,5 @@ public class PointService {
                                             .build();
         pointRepository.save(history);
     }
+
 }

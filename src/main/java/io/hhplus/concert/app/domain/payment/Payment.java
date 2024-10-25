@@ -22,7 +22,6 @@ public class Payment extends BaseTimeEntity {
     long userId;
     long reservationId;
     double totalAmount;
-
     @Setter
     LocalDateTime paymentAt;
     @Setter

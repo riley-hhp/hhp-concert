@@ -2,8 +2,10 @@ package io.hhplus.concert.app.domain.concert;
 
 import io.hhplus.concert.config.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Concert extends BaseTimeEntity {
 
     @Column(name="CONCERT_ID")

@@ -3,11 +3,12 @@ package io.hhplus.concert.app.application.waitingqueue;
 import io.hhplus.concert.app.domain.waitingqueue.WaitingQueue;
 import io.hhplus.concert.app.infra.jpa.waitingqueue.WaitingQueueCoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class WaitingQueueService {
+public class WaitingQueueService implements WaitingQueueUseCase {
 
     private final WaitingQueueCoreRepository waitingQueRepository;
 
