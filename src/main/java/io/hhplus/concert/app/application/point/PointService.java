@@ -4,6 +4,8 @@ import io.hhplus.concert.app.domain.point.Point;
 import io.hhplus.concert.app.domain.point.PointHistory;
 import io.hhplus.concert.app.domain.point.PointRepository;
 import io.hhplus.concert.app.domain.point.TransactionType;
+import io.hhplus.concert.config.exception.CoreException;
+import io.hhplus.concert.config.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,7 @@ public class PointService implements PointUseCase {
     public int getUserPoints(long userId) {
 
         return (int) ((Point) pointRepository.findPoinByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("사용자의 포인트를 찾을 수 없습니다.")))
+                .orElseThrow(() -> new CoreException(ErrorCode.USER_POINTS_NOT_FOUND)))
                 .getBalance(); // 사용자의 포인트 잔액 반환
     }
 
@@ -28,7 +30,7 @@ public class PointService implements PointUseCase {
     public void chargePoints(long userId, int amount) {
 
         Point point = (Point) pointRepository.findPoinByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("사용자의 포인트 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CoreException(ErrorCode.USER_POINTS_NOT_FOUND));
 
         // 포인트 충전
         point.addPoints(amount);
@@ -48,10 +50,10 @@ public class PointService implements PointUseCase {
     public void usePoints(long userId, double amount) {
 
         Point point = (Point) pointRepository.findPoinByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("사용자의 포인트 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CoreException(ErrorCode.USER_POINTS_NOT_FOUND));
 
         if (point.getBalance() < amount) {
-            throw new RuntimeException("포인트가 부족합니다.");
+            throw new CoreException(ErrorCode.POINTS_LACK);
         }
 
         // 포인트 차감
