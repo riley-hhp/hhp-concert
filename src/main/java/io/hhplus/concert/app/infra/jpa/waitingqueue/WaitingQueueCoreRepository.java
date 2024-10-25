@@ -3,6 +3,8 @@ package io.hhplus.concert.app.infra.jpa.waitingqueue;
 import io.hhplus.concert.app.domain.waitingqueue.WaitingQueue;
 import io.hhplus.concert.app.domain.waitingqueue.WaitingQueueRepository;
 import io.hhplus.concert.app.domain.waitingqueue.WaitingQueueStatus;
+import io.hhplus.concert.config.exception.CoreException;
+import io.hhplus.concert.config.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -26,7 +28,7 @@ public class WaitingQueueCoreRepository implements WaitingQueueRepository {
     public WaitingQueue getToken(String token) {
 
         return waitingQueJpaRepository.findByToken(token)
-                                      .orElseThrow(()-> new RuntimeException("토큰이 없습니다."));
+                                      .orElseThrow(()-> new CoreException(ErrorCode.TOKEN_NOT_FOUND));
     }
 
     @Override
