@@ -1,6 +1,8 @@
 package io.hhplus.concert.app.domain.point;
 
 import io.hhplus.concert.config.BaseTimeEntity;
+import io.hhplus.concert.config.exception.CoreException;
+import io.hhplus.concert.config.exception.ErrorCode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +24,7 @@ public class Point extends BaseTimeEntity {
     // 포인트 충전
     public void addPoints(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("충전 금액은 0보다 커야 합니다.");
+            throw new CoreException(ErrorCode.NO_SUCH_TIER);
         }
         this.balance += amount;
     }
@@ -30,10 +32,10 @@ public class Point extends BaseTimeEntity {
     // 포인트 차감
     public void subtractPoints(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("차감 금액은 0보다 커야 합니다.");
+            throw new CoreException(ErrorCode.TIER_AMOUNT_INVALID);
         }
         if (this.balance < amount) {
-            throw new RuntimeException("잔액이 부족합니다.");
+            throw new CoreException(ErrorCode.POINTS_LACK);
         }
         this.balance -= amount;
     }
