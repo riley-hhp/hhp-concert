@@ -31,6 +31,7 @@ dependencies {
     implementation ("org.springframework.boot:spring-boot-starter-jdbc")
     runtimeOnly ("com.h2database:h2")
     implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
+    implementation ("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1")
 }
 
 // about source and compilation

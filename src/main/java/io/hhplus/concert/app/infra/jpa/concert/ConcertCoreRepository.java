@@ -3,6 +3,8 @@ package io.hhplus.concert.app.infra.jpa.concert;
 import io.hhplus.concert.app.domain.concert.*;
 import io.hhplus.concert.app.domain.payment.Payment;
 import io.hhplus.concert.app.infra.jpa.payment.PaymentJpaRepository;
+import io.hhplus.concert.config.exception.CoreException;
+import io.hhplus.concert.config.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -25,7 +27,7 @@ public class ConcertCoreRepository implements ConcertRepository {
     public Concert findConcertById(long concertId) {
 
         return concertJpaRepository.findById(concertId)
-                .orElseThrow(() -> new RuntimeException("콘서트를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CoreException(ErrorCode.CONCERT_NOT_FOUND));
     }
 
     // 예약 가능한 콘서트 아이템 조회
@@ -46,10 +48,10 @@ public class ConcertCoreRepository implements ConcertRepository {
     @Transactional
     public Reservation createTemporaryReservation(long userId, long concertItemId, long seatId) {
 
-        Seat seat = seatJpaRepository.findById(seatId)
-                .orElseThrow(() -> new RuntimeException("좌석을 찾을 수 없습니다."));
-        ConcertItem concertItem = concertItemJpaRepository.findById(concertItemId)
-                .orElseThrow(() -> new RuntimeException("콘서트 아이템을 찾을 수 없습니다."));
+        Seat seat = seatJpaRepository.findSeatForUpdate(seatId)
+                .orElseThrow(() -> new CoreException(ErrorCode.SEAT_NOT_FOUND));
+        ConcertItem concertItem = concertItemJpaRepository.findConcertItemForUpdate(concertItemId)
+                .orElseThrow(() -> new CoreException(ErrorCode.CONCERT_ITEM_NOT_FOUND));
 
         // 좌석 임시 예약
         seat.reserveTemporarily();
@@ -77,10 +79,10 @@ public class ConcertCoreRepository implements ConcertRepository {
     public Reservation confirmReservation(long reservationId, Payment payment) {
 
         Reservation reservation = reservationJpaRepository.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("예약을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CoreException(ErrorCode.RESERVATION_NOT_FOUND));
 
         Seat seat = seatJpaRepository.findById(reservation.getSeatId())
-                .orElseThrow(() -> new RuntimeException("좌석을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CoreException(ErrorCode.SEAT_NOT_FOUND));
 
         // 5분 이내 결제 확인 후 예약 확정
         if (reservation.getReservedAt().plusMinutes(5).isAfter(payment.getPaymentAt())) {
@@ -91,7 +93,7 @@ public class ConcertCoreRepository implements ConcertRepository {
             reservationJpaRepository.save(reservation);
         }
         else {
-            throw new RuntimeException("결제 시간이 초과되었습니다.");
+            throw new CoreException(ErrorCode.PAYMENT_TIME_OUT);
         }
         return reservation;
     }
@@ -103,9 +105,9 @@ public class ConcertCoreRepository implements ConcertRepository {
 
         for (Reservation reservation : expiredReservations) {
             Seat seat = seatJpaRepository.findById(reservation.getSeatId())
-                    .orElseThrow(() -> new RuntimeException("좌석을 찾을 수 없습니다."));
+                    .orElseThrow(() -> new CoreException(ErrorCode.SEAT_NOT_FOUND));
             ConcertItem concertItem = concertItemJpaRepository.findById(reservation.getConcertItemId())
-                    .orElseThrow(() -> new RuntimeException("콘서트 아이템을 찾을 수 없습니다."));
+                    .orElseThrow(() -> new CoreException(ErrorCode.CONCERT_ITEM_NOT_FOUND));
 
             // 좌석 상태 복원, 콘서트 아이템 좌석 복원
             seat.restoreIfExpired(reservation);
@@ -120,12 +122,12 @@ public class ConcertCoreRepository implements ConcertRepository {
 
     @Override
     public Reservation findReservationByUserId(long userId) {
-        return reservationJpaRepository.findByUserId(userId).orElseThrow( () -> new RuntimeException("해당 사용자의 예약이 없습니다."));
+        return reservationJpaRepository.findByUserId(userId).orElseThrow( () -> new CoreException(ErrorCode.USER_RESERVATION_NOT_FOUND));
     }
 
     @Override
     public Reservation findReservationById(long reservationId) {
-        return reservationJpaRepository.findById(reservationId).orElseThrow(()-> new RuntimeException("해당 예약이 없습니다."));
+        return reservationJpaRepository.findById(reservationId).orElseThrow(()-> new CoreException(ErrorCode.RESERVATION_NOT_FOUND));
     }
 
     @Override
