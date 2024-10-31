@@ -3,10 +3,7 @@ package io.hhplus.concert.app.domain.point;
 import io.hhplus.concert.config.BaseTimeEntity;
 import io.hhplus.concert.config.exception.CoreException;
 import io.hhplus.concert.config.exception.ErrorCode;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
@@ -20,6 +17,9 @@ public class Point extends BaseTimeEntity {
     @Id
     long userId;
     double balance;
+
+//    @Version
+    private Long version;
 
     // 포인트 충전
     public void addPoints(double amount) {

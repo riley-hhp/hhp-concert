@@ -32,6 +32,15 @@ dependencies {
     runtimeOnly ("com.h2database:h2")
     implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
     implementation ("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1")
+
+    // 낙관락 - 재시도
+    implementation ("org.springframework.retry:spring-retry")
+
+    // 분산락 - 레디스
+    implementation ("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation ("org.redisson:redisson-spring-boot-starter:3.27.1")
+    implementation ("org.springframework.boot:spring-boot-starter-aop")
+
 }
 
 // about source and compilation

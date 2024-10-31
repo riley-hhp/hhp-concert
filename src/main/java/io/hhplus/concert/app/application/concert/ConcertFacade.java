@@ -3,6 +3,7 @@ package io.hhplus.concert.app.application.concert;
 import io.hhplus.concert.app.application.payment.PaymentFacade;
 import io.hhplus.concert.app.domain.concert.*;
 import io.hhplus.concert.app.domain.payment.Payment;
+import io.hhplus.concert.config.lock.DistributedLock;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -31,7 +32,8 @@ public class ConcertFacade implements ConcertUseCase {
     }
 
     // 좌석 예약 요청 API
-    @Transactional
+//    @Transactional
+    @DistributedLock(key = "T(String).valueOf(#concertItemId) + '-' + T(String).valueOf(#seatId)")
     public Reservation reserveSeatAndPay(long userId, long concertItemId, long seatId) {
 
         // 가예약 생성
