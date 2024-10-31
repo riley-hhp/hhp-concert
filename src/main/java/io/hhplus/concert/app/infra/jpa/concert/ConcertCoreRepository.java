@@ -48,9 +48,9 @@ public class ConcertCoreRepository implements ConcertRepository {
     @Transactional
     public Reservation createTemporaryReservation(long userId, long concertItemId, long seatId) {
 
-        Seat seat = seatJpaRepository.findById(seatId)
+        Seat seat = seatJpaRepository.findSeatForUpdate(seatId)
                 .orElseThrow(() -> new CoreException(ErrorCode.SEAT_NOT_FOUND));
-        ConcertItem concertItem = concertItemJpaRepository.findById(concertItemId)
+        ConcertItem concertItem = concertItemJpaRepository.findConcertItemForUpdate(concertItemId)
                 .orElseThrow(() -> new CoreException(ErrorCode.CONCERT_ITEM_NOT_FOUND));
 
         // 좌석 임시 예약

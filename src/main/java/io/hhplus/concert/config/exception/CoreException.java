@@ -10,4 +10,7 @@ public class CoreException extends RuntimeException {
     public CoreException(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
+    public String getErrorMessage() {
+        return errorCode.getMessage();
+    }
 }
