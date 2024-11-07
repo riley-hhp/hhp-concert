@@ -14,21 +14,21 @@ VALUES
     (800, 3, CURRENT_TIMESTAMP, '2024-10-30 20:30:00', null, 'Grand Theatre', 'Classical Overture');
 
 -- seat 테이블에 더미 데이터 삽입
-INSERT INTO seat (price, concert_item_id, created_at, seat_number, updated_at, status)
+INSERT INTO seat (price, concert_item_id, created_at, seat_number, updated_at, status, version)
 VALUES
-    (100.00, 1, CURRENT_TIMESTAMP, 1, null, 'AVAILABLE'),
-    (100.00, 1, CURRENT_TIMESTAMP, 2, null, 'AVAILABLE'),
-    (150.00, 2, CURRENT_TIMESTAMP, 1, null, 'AVAILABLE'),
-    (200.00, 2, CURRENT_TIMESTAMP, 2, null, 'AVAILABLE'),
-    (50.00, 3, CURRENT_TIMESTAMP, 1, null, 'AVAILABLE'),
-    (50.00, 3, CURRENT_TIMESTAMP, 2, null, 'AVAILABLE');
+    (100.00, 1, CURRENT_TIMESTAMP, 1, null, 'AVAILABLE', 0),
+    (100.00, 1, CURRENT_TIMESTAMP, 2, null, 'AVAILABLE', 0),
+    (150.00, 2, CURRENT_TIMESTAMP, 1, null, 'AVAILABLE', 0),
+    (200.00, 2, CURRENT_TIMESTAMP, 2, null, 'AVAILABLE', 0),
+    (50.00, 3, CURRENT_TIMESTAMP, 1, null, 'AVAILABLE', 0),
+    (50.00, 3, CURRENT_TIMESTAMP, 2, null, 'AVAILABLE', 0);
 
 -- point 테이블에 더미 데이터 삽입
-INSERT INTO point (balance, created_at, updated_at, user_id)
+INSERT INTO point (balance, created_at, updated_at, user_id, version)
 VALUES
-    (10000000.00, CURRENT_TIMESTAMP, null, 1),
-    (5000000.00, CURRENT_TIMESTAMP, null, 2),
-    (3000000.00, CURRENT_TIMESTAMP, null, 3);
+    (10000000.00, CURRENT_TIMESTAMP, null, 1, 0),
+    (5000000.00, CURRENT_TIMESTAMP, null, 2, 0),
+    (3000000.00, CURRENT_TIMESTAMP, null, 3, 0);
 
 -- users 테이블에 더미 데이터 삽입
 INSERT INTO users (name, password)

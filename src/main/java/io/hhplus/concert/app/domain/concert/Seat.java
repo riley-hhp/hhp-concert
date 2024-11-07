@@ -29,6 +29,9 @@ public class Seat extends BaseTimeEntity {
     @ToString.Exclude
     ConcertItem concertItem;
 
+    @Version
+    private Long version;
+
     public Seat(long l, long l1) {
         this.id = l;
         this.seatNumber = l1;

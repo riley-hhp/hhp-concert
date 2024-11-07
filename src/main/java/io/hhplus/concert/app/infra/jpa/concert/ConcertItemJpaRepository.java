@@ -17,7 +17,7 @@ public interface ConcertItemJpaRepository extends JpaRepository<ConcertItem, Lon
 
     List<ConcertItem> findByConcertIdAndSessionAtAfterAndCapacityGreaterThan(long concertId, LocalDateTime now, int capacity);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+//    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT ci FROM ConcertItem ci WHERE ci.id = :concertItemId")
     Optional<ConcertItem> findConcertItemForUpdate(@Param("concertItemId") Long concertItemId);
 }

@@ -28,6 +28,11 @@ public class PointCoreRepository implements PointRepository {
     }
 
     @Override
+    public Optional<Point> findPoinByUserIdWithLock(long userId) {
+        return pointJpaRepository.findByUserIdWithLock(userId);
+    }
+
+    @Override
     public Optional<PointHistory> findPointHistoryByUserId(long userId) {
         return pointHistoryJpaRepository.findByUserId(userId);
     }

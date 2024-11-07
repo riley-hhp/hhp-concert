@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface PointRepository{
 
     Optional<Point> findPoinByUserId(long userId);
+    Optional<Point> findPoinByUserIdWithLock(long userId);
     Optional<PointHistory> findPointHistoryByUserId(long userId);
 
     void save(Point point);
