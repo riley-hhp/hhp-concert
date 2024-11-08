@@ -6,6 +6,7 @@ import io.hhplus.concert.app.domain.payment.Payment;
 import io.hhplus.concert.config.lock.DistributedLock;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +21,16 @@ public class ConcertFacade implements ConcertUseCase {
 
 
     // 예약 가능 날짜 조회 API
+    // 콘서트 정보 조회 (캐시 적용)
+    @Cacheable(value = "concerts", key = "#concertId")
     public List<ConcertItem> getAvailableDates(long concertId) {
 
         return concertRepository.findAvailableConcertItems(concertId);
     }
 
     // 좌석 조회 API
+    // 콘서트 정보 조회 (캐시 적용)
+    @Cacheable(value = "seats", key = "#concertItemId")
     public List<Seat> getAvailableSeats(long concertItemId) {
 
         return concertRepository.findAvailableSeats(concertItemId);
