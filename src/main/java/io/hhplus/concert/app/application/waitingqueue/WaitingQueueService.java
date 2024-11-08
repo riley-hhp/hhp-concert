@@ -1,16 +1,15 @@
 package io.hhplus.concert.app.application.waitingqueue;
 
 import io.hhplus.concert.app.domain.waitingqueue.WaitingQueue;
-import io.hhplus.concert.app.infra.jpa.waitingqueue.WaitingQueueCoreRepository;
+import io.hhplus.concert.app.domain.waitingqueue.WaitingQueueRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class WaitingQueueService implements WaitingQueueUseCase {
 
-    private final WaitingQueueCoreRepository waitingQueRepository;
+    private final WaitingQueueRepository waitingQueRepository;
 
     //토큰 발급
     public WaitingQueue issueToken(Long concertId) {
