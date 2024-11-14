@@ -37,9 +37,10 @@ dependencies {
     implementation ("org.springframework.retry:spring-retry")
 
     // 분산락 - 레디스
+    implementation ("org.springframework.boot:spring-boot-starter-aop")
     implementation ("org.springframework.boot:spring-boot-starter-data-redis")
     implementation ("org.redisson:redisson-spring-boot-starter:3.27.1")
-    implementation ("org.springframework.boot:spring-boot-starter-aop")
+    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
 
 }
 
