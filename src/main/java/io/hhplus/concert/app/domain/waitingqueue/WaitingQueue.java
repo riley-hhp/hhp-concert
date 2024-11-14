@@ -1,8 +1,5 @@
 package io.hhplus.concert.app.domain.waitingqueue;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.hhplus.concert.config.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,6 +20,7 @@ public class WaitingQueue extends BaseTimeEntity {
     private long id;
     private long concertId;
     private String token;
+
     @Setter
     private LocalDateTime expiredAt;
 
@@ -62,24 +60,4 @@ public class WaitingQueue extends BaseTimeEntity {
         return this;
     }
 
-    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-
-    public static String stringify(Object waitingQueue) {
-        try {
-            return objectMapper.writeValueAsString(waitingQueue);
-        }
-        catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-    public static WaitingQueue parseWaitingQueue(String jsonString) {
-        try {
-            return objectMapper.readValue(jsonString, WaitingQueue.class);
-        }
-        catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

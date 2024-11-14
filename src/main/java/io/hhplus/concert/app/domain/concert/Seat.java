@@ -1,6 +1,5 @@
 package io.hhplus.concert.app.domain.concert;
 
-import io.hhplus.concert.app.domain.payment.Payment;
 import io.hhplus.concert.config.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
