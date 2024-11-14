@@ -3,7 +3,6 @@ package io.hhplus.concert.app.application.concert;
 import io.hhplus.concert.app.application.payment.PaymentUseCase;
 import io.hhplus.concert.app.application.point.PointUseCase;
 import io.hhplus.concert.app.domain.concert.*;
-import io.hhplus.concert.app.domain.point.Point;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
