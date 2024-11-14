@@ -1,6 +1,5 @@
 package io.hhplus.concert.config.exception;
 
-import io.hhplus.concert.config.exception.CoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

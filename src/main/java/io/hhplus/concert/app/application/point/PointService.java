@@ -6,12 +6,8 @@ import io.hhplus.concert.app.domain.point.PointRepository;
 import io.hhplus.concert.app.domain.point.TransactionType;
 import io.hhplus.concert.config.exception.CoreException;
 import io.hhplus.concert.config.exception.ErrorCode;
-import io.hhplus.concert.config.lock.DistributedLock;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 
@@ -30,12 +26,9 @@ public class PointService implements PointUseCase {
     }
 
     // 포인트 충전
-//    @DistributedLock(key = "#userId")
-//    @Retryable(value = {OptimisticLockingFailureException.class}, maxAttempts = 2, backoff = @Backoff(delay = 100))
     @Transactional
     public void chargePoints(long userId, int amount) {
 
-//        Point point = (Point) pointRepository.findPoinByUserId(userId)
         Point point = (Point) pointRepository.findPoinByUserIdWithLock(userId)
                 .orElseThrow(() -> new CoreException(ErrorCode.USER_POINTS_NOT_FOUND));
 
@@ -53,12 +46,9 @@ public class PointService implements PointUseCase {
     }
 
     // 포인트 사용
-//    @DistributedLock(key = "#userId")
-//    @Retryable(value = {OptimisticLockingFailureException.class}, maxAttempts = 2, backoff = @Backoff(delay = 100))
     @Transactional
     public void usePoints(long userId, double amount) {
 
-//        Point point = (Point) pointRepository.findPoinByUserId(userId)
         Point point = (Point) pointRepository.findPoinByUserIdWithLock(userId)
                 .orElseThrow(() -> new CoreException(ErrorCode.USER_POINTS_NOT_FOUND));
 
