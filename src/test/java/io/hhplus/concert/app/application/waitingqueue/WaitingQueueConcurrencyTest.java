@@ -1,8 +1,8 @@
 package io.hhplus.concert.app.application.waitingqueue;
 
 import io.hhplus.concert.app.domain.waitingqueue.WaitingQueue;
+import io.hhplus.concert.app.domain.waitingqueue.WaitingQueueRepository;
 import io.hhplus.concert.app.domain.waitingqueue.WaitingQueueStatus;
-import io.hhplus.concert.app.infra.jpa.waitingqueue.WaitingQueueCoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,12 +26,18 @@ public class WaitingQueueConcurrencyTest {
     private WaitingQueueUseCase waitingQueueUseCase;
 
     @Autowired
-    private WaitingQueueCoreRepository waitingQueueRepository;
+    private WaitingQueueRepository waitingQueueRepository;
 
     private final int THREAD_COUNT = 10;
 
+    @BeforeEach
+    void setUp() {
+        waitingQueueRepository.deleteAll();
+    }
+
     @Test
     public void 여러_사용자가_동시에_토큰을_발급() throws InterruptedException {
+
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
         CountDownLatch latch = new CountDownLatch(THREAD_COUNT);
 
@@ -57,6 +63,7 @@ public class WaitingQueueConcurrencyTest {
 
     @Test
     public void 여러_사용자가_동시에_토큰을_활성화() throws InterruptedException {
+
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
         CountDownLatch latch = new CountDownLatch(THREAD_COUNT);
 
@@ -88,17 +95,19 @@ public class WaitingQueueConcurrencyTest {
 
     @Test
     public void 여러_사용자가_동시에_토큰을_만료() throws InterruptedException {
+
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
         CountDownLatch latch = new CountDownLatch(THREAD_COUNT);
 
         // 먼저 토큰 발급 및 활성화
         Long concertId = 1L;
         for (int i = 0; i < THREAD_COUNT; i++) {
-            WaitingQueue waitingQueue = waitingQueueUseCase.issueToken(concertId);
-            waitingQueue.activate();  // 토큰을 활성화 상태로 변경
+            WaitingQueue waitingQueue = WaitingQueue.issue(concertId);
             waitingQueue.setExpiredAt(LocalDateTime.now().minusMinutes(1));  // 이미 만료된 상태로 설정
             waitingQueueRepository.save(waitingQueue);  // 수동으로 expiredAt 시간을 설정하여 저장
         }
+        List<WaitingQueue> tokens = waitingQueueRepository.findAll();
+        System.out.println("tokens.size() = " + tokens.size());
 
         // 동시에 토큰 만료 처리
         for (int i = 0; i < THREAD_COUNT; i++) {
@@ -115,8 +124,8 @@ public class WaitingQueueConcurrencyTest {
         executorService.shutdown();
 
         // 모든 토큰이 만료 상태인지 확인
+//        assertTrue(expiredTokens.stream().allMatch(token -> token.getStatus() == WaitingQueueStatus.EXPIRED));  // 모든 토큰이 만료 상태인지 검증
         List<WaitingQueue> expiredTokens = waitingQueueRepository.findAll();
-        assertTrue(expiredTokens.stream()
-                .allMatch(token -> token.getStatus() == WaitingQueueStatus.EXPIRED));  // 모든 토큰이 만료 상태인지 검증
+        assertTrue(expiredTokens.isEmpty());  // 모든 토큰이 만료(레디스 삭제) 상태인지 검증
     }
 }

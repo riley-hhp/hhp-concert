@@ -1,13 +1,16 @@
 package io.hhplus.concert.app.application.waitingqueue;
 
 import io.hhplus.concert.app.domain.waitingqueue.WaitingQueue;
-import io.hhplus.concert.app.infra.jpa.waitingqueue.WaitingQueueCoreRepository;
+import io.hhplus.concert.app.domain.waitingqueue.WaitingQueueRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -18,10 +21,11 @@ import static org.mockito.Mockito.when;
 class WaitingQueueUseCaseTest {
 
     @Mock
-    WaitingQueueCoreRepository waitingQueueCoreRepository;
+    WaitingQueueRepository waitingQueueRepository;
 
     @InjectMocks
     WaitingQueueService waitingQueueUseCase;
+
 
     @Test
     void 토큰_발급_성공() {
@@ -32,7 +36,7 @@ class WaitingQueueUseCaseTest {
                                                 .concertId(concertId)
                                                 .build();
 
-        when(waitingQueueCoreRepository.issueToken(concertId)).thenReturn(expectedQueue);
+        when(waitingQueueRepository.issueToken(concertId)).thenReturn(expectedQueue);
 
         // When
         WaitingQueue actualQueue = waitingQueueUseCase.issueToken(concertId);
@@ -51,7 +55,7 @@ class WaitingQueueUseCaseTest {
                                                 .concertId(1L)
                                                 .build();
 
-        when(waitingQueueCoreRepository.getToken(token)).thenReturn(expectedQueue);
+        when(waitingQueueRepository.getToken(token)).thenReturn(expectedQueue);
 
         // When
         WaitingQueue actualQueue = waitingQueueUseCase.getToken(token);
@@ -67,7 +71,7 @@ class WaitingQueueUseCaseTest {
         waitingQueueUseCase.activeToken();
 
         // Then
-        verify(waitingQueueCoreRepository).activeToken();
+        verify(waitingQueueRepository).activeToken();
     }
 
     @Test
@@ -77,6 +81,6 @@ class WaitingQueueUseCaseTest {
         waitingQueueUseCase.expireToken();
 
         // Then
-        verify(waitingQueueCoreRepository).expireToken();
+        verify(waitingQueueRepository).expireToken();
     }
 }
