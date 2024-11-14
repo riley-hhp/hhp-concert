@@ -7,6 +7,9 @@ spring:
       path: /h2-console
 
   datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/hhp
+
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb  # 'testdb'는 원하는 이름으로 설정 가능
 #    url: jdbc:h2:tcp://localhost/~/test
@@ -16,6 +19,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create  # 스키마 자동 업데이트
+#      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect

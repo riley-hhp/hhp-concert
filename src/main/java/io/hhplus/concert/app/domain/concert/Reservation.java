@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString
 public class Reservation extends BaseTimeEntity {
 
     @Column(name = "RESERVATION_ID")
@@ -19,6 +20,7 @@ public class Reservation extends BaseTimeEntity {
     @Id
     long id;
     long userId;
+
     @Setter
     long paymentId;
     long concertItemId;

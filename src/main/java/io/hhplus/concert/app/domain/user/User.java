@@ -1,11 +1,15 @@
 package io.hhplus.concert.app.domain.user;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "users")
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Column(name = "USER_ID")
@@ -13,5 +17,4 @@ public class User {
     @Id
     long id; //id
     String name; //이름
-    String password; //비밀번호
 }
