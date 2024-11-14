@@ -8,8 +8,6 @@ import java.util.List;
 @Repository
 public interface ConcertRepository {
 
-
-
     // 콘서트 ID로 콘서트 조회
     Concert findConcertById(long concertId);
 
