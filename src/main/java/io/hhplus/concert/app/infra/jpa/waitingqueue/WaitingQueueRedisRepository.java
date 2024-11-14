@@ -2,8 +2,10 @@ package io.hhplus.concert.app.infra.jpa.waitingqueue;
 
 import io.hhplus.concert.app.domain.waitingqueue.WaitingQueue;
 import io.hhplus.concert.app.domain.waitingqueue.WaitingQueueRepository;
+import io.hhplus.concert.config.RedisConfig;
 import io.hhplus.concert.config.exception.CoreException;
 import io.hhplus.concert.config.exception.ErrorCode;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.Cursor;
@@ -24,7 +26,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WaitingQueueRedisRepository implements WaitingQueueRepository {
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisConfig redisConfig;
+    RedisTemplate<String, WaitingQueue> waitingQueueTemplate;
+    RedisTemplate<String, String> stringTemplate;
+
+    @PostConstruct
+    public void init() {
+        this.waitingQueueTemplate = redisConfig.createRedisTemplate( WaitingQueue.class );
+        this.stringTemplate = redisConfig.createRedisTemplate( String.class );
+    }
+
     private static final String WAITING_QUEUE_PREFIX = "waiting_queue";
     private static final String TOKEN_PREFIX = "token:";
     private static final long TOKEN_EXPIRE_SECONDS = 60 * 5;
@@ -34,9 +45,8 @@ public class WaitingQueueRedisRepository implements WaitingQueueRepository {
 
         WaitingQueue token = WaitingQueue.issue(concertId);
         String tokenKey = TOKEN_PREFIX + token.getToken();
-
-        redisTemplate.opsForValue().set(tokenKey, Objects.requireNonNull(WaitingQueue.stringify(token)), TOKEN_EXPIRE_SECONDS*10, TimeUnit.SECONDS);
-        redisTemplate.opsForZSet().add(WAITING_QUEUE_PREFIX, token.getToken(), System.currentTimeMillis());
+        waitingQueueTemplate.opsForValue().set(tokenKey, token, TOKEN_EXPIRE_SECONDS*10, TimeUnit.SECONDS);
+        stringTemplate.opsForZSet().add(WAITING_QUEUE_PREFIX, token.getToken(), System.currentTimeMillis());
         return token;
     }
 
@@ -44,7 +54,7 @@ public class WaitingQueueRedisRepository implements WaitingQueueRepository {
     public WaitingQueue getToken(String token) {
 
         String tokenKey = TOKEN_PREFIX + token;
-        WaitingQueue waitingQueue = WaitingQueue.parseWaitingQueue(redisTemplate.opsForValue().get(tokenKey));
+        WaitingQueue waitingQueue = waitingQueueTemplate.opsForValue().get(tokenKey);
         if(waitingQueue == null) {
             throw new CoreException(ErrorCode.TOKEN_NOT_FOUND);
         }
@@ -54,7 +64,7 @@ public class WaitingQueueRedisRepository implements WaitingQueueRepository {
     @Override
     public void activeToken() {
 
-        Set<String> tokensToActive = redisTemplate.opsForZSet().range(WAITING_QUEUE_PREFIX, 0, WaitingQueue.ACTIVE_SIZE - 1 );
+        Set<String> tokensToActive = stringTemplate.opsForZSet().range(WAITING_QUEUE_PREFIX, 0, WaitingQueue.ACTIVE_SIZE - 1 );
         assert tokensToActive != null;
         if(tokensToActive.isEmpty()) {
             return;
@@ -62,13 +72,12 @@ public class WaitingQueueRedisRepository implements WaitingQueueRepository {
 
         for (String token : tokensToActive) {
             String tokenKey = TOKEN_PREFIX + token;
-            WaitingQueue queue = WaitingQueue.parseWaitingQueue(redisTemplate.opsForValue().get(tokenKey));
-
+            WaitingQueue queue = waitingQueueTemplate.opsForValue().get(tokenKey);
             if(queue != null) {
                 queue.activate();
-                redisTemplate.opsForValue().set(tokenKey, Objects.requireNonNull(WaitingQueue.stringify(queue)),TOKEN_EXPIRE_SECONDS, TimeUnit.SECONDS);
+                waitingQueueTemplate.opsForValue().set(tokenKey, queue, TOKEN_EXPIRE_SECONDS, TimeUnit.SECONDS);
             }
-            redisTemplate.opsForZSet().remove(WAITING_QUEUE_PREFIX,token);
+            stringTemplate.opsForZSet().remove(WAITING_QUEUE_PREFIX,token);
         }
     }
 
@@ -81,10 +90,9 @@ public class WaitingQueueRedisRepository implements WaitingQueueRepository {
     private Set<String> scanKeys(String pattern) {
 
         Set<String> keys = new HashSet<>();
-        Cursor<byte[]> cursor = redisTemplate.executeWithStickyConnection(
+        Cursor<byte[]> cursor = waitingQueueTemplate.executeWithStickyConnection(
                 connection -> connection.scan(ScanOptions.scanOptions().match(pattern).count(100).build())
         );
-
         while (true) {
             assert cursor != null;
             if (!cursor.hasNext()) break;
@@ -100,14 +108,12 @@ public class WaitingQueueRedisRepository implements WaitingQueueRepository {
         if (tokens.isEmpty()) {
             return;
         }
-
         for (String tokenKey : tokens) {
-            WaitingQueue queue = WaitingQueue.parseWaitingQueue(redisTemplate.opsForValue().get(tokenKey));
-
+            WaitingQueue queue = waitingQueueTemplate.opsForValue().get(tokenKey);
             if (queue != null) {
                 // expiredAt 시간이 현재 시간보다 이전이라면 만료 처리
                 if (queue.getExpiredAt().isBefore(LocalDateTime.now())) {
-                    redisTemplate.delete(tokenKey);
+                    waitingQueueTemplate.delete(tokenKey);
                 }
             }
         }
@@ -118,12 +124,9 @@ public class WaitingQueueRedisRepository implements WaitingQueueRepository {
 
         Set<String> tokens = scanKeys(TOKEN_PREFIX + "*");
         if (tokens.isEmpty()) return List.of();
-
-        List<String> jsonStrings = redisTemplate.opsForValue().multiGet(tokens);
+        List<WaitingQueue> jsonStrings = waitingQueueTemplate.opsForValue().multiGet(tokens);
         assert jsonStrings != null;
         return jsonStrings.stream()
-                .filter(Objects::nonNull)
-                .map(WaitingQueue::parseWaitingQueue)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -133,18 +136,16 @@ public class WaitingQueueRedisRepository implements WaitingQueueRepository {
 
         Set<String> tokens = scanKeys(TOKEN_PREFIX + "*");
         if (tokens.isEmpty()) return;
-        tokens.forEach(redisTemplate::delete);
-
-        Set<String> waitingQueue = redisTemplate.opsForZSet().range(WAITING_QUEUE_PREFIX, 0, -1);
+        tokens.forEach(waitingQueueTemplate::delete);
+        Set<String> waitingQueue = stringTemplate.opsForZSet().range(WAITING_QUEUE_PREFIX, 0, -1);
         assert waitingQueue != null;
-        if (waitingQueue.isEmpty()) return;
-        redisTemplate.delete(WAITING_QUEUE_PREFIX);
+        waitingQueueTemplate.delete(WAITING_QUEUE_PREFIX);
     }
 
     @Override
     public void save(WaitingQueue waitingQueue) {
 
         String tokenKey = TOKEN_PREFIX + waitingQueue.getToken();
-        redisTemplate.opsForValue().set(tokenKey, Objects.requireNonNull(WaitingQueue.stringify(waitingQueue)), TOKEN_EXPIRE_SECONDS, TimeUnit.SECONDS);
+        waitingQueueTemplate.opsForValue().set( tokenKey, waitingQueue, TOKEN_EXPIRE_SECONDS, TimeUnit.SECONDS);
     }
 }
