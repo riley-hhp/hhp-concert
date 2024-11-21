@@ -1,8 +1,6 @@
 package io.hhplus.concert.app.application.payment;
 
-import io.hhplus.concert.app.application.concert.ConcertUseCase;
-import io.hhplus.concert.app.application.point.PointUseCase;
-import io.hhplus.concert.app.domain.concert.ConcertRepository;
+import io.hhplus.concert.app.application.point.PointUsecase;
 import io.hhplus.concert.app.domain.concert.Reservation;
 import io.hhplus.concert.app.domain.payment.Payment;
 import io.hhplus.concert.app.domain.payment.PaymentRepository;
@@ -15,10 +13,10 @@ import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
-public class PaymentFacade implements PaymentUseCase {
+public class PaymentCoreUsecase implements PaymentUsecase {
 
     private final PaymentRepository paymentRepository;
-    private final PointUseCase pointUseCase;
+    private final PointUsecase pointUsecase;
 
     @Transactional
     public Payment processPayment(Reservation reservation) {
@@ -31,7 +29,7 @@ public class PaymentFacade implements PaymentUseCase {
 
         // 결제 처리 로직
         if ( payment.getStatus() != PaymentStatus.COMPLETED ) {
-            pointUseCase.usePoints(reservation.getUserId(), reservation.getPrice());      // 포인트 차감
+            pointUsecase.usePoints(reservation.getUserId(), reservation.getPrice());      // 포인트 차감
             payment.setStatus(PaymentStatus.COMPLETED);
             payment.setPaymentAt(LocalDateTime.now()); // 결제 완료 시간 설정
             paymentRepository.save(payment);  // 업데이트된 결제 정보 저장

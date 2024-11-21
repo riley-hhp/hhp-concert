@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class PointService implements PointUseCase {
+public class PointService implements PointUsecase {
 
     private final PointRepository pointRepository;
 

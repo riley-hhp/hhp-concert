@@ -7,7 +7,7 @@ import io.hhplus.concert.app.domain.concert.ReservationStatus;
 import io.hhplus.concert.app.domain.payment.Payment;
 import io.hhplus.concert.app.domain.payment.PaymentRepository;
 import io.hhplus.concert.app.domain.payment.PaymentStatus;
-import io.hhplus.concert.app.application.point.PointUseCase;
+import io.hhplus.concert.app.application.point.PointUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,16 +22,16 @@ import static org.mockito.Mockito.*;
 
 @DisplayName("결제 단위 테스트")
 @ExtendWith(MockitoExtension.class)
-class PaymentUseCaseTest {
+class PaymentUsecaseTest {
 
     @InjectMocks
-    private PaymentFacade paymentUseCase;
+    private PaymentCoreUsecase paymentUsecase;
 
     @Mock
     private PaymentRepository paymentRepository;
 
     @Mock
-    private PointUseCase pointUseCase;
+    private PointUsecase pointUseCase;
 
     private Payment payment; // 결제 객체
 
@@ -52,7 +52,7 @@ class PaymentUseCaseTest {
         when(paymentRepository.findByReservationId(1L)).thenReturn(Optional.of(payment));
 
         // when
-        Payment result = paymentUseCase.processPayment(Reservation.builder().id(1L).userId(1L).price(1000).status(ReservationStatus.TEMP).build());
+        Payment result = paymentUsecase.processPayment(Reservation.builder().id(1L).userId(1L).price(1000).status(ReservationStatus.TEMP).build());
 
         // then
         assertEquals(PaymentStatus.COMPLETED, result.getStatus());
@@ -69,7 +69,7 @@ class PaymentUseCaseTest {
 
         // when & then
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            paymentUseCase.processPayment(Reservation.builder().id(1L).paymentId(1L).build());
+            paymentUsecase.processPayment(Reservation.builder().id(1L).paymentId(1L).build());
         });
         assertEquals("결제가 이미 완료되었거나 실패한 상태입니다.", exception.getMessage());
     }
@@ -80,7 +80,7 @@ class PaymentUseCaseTest {
         when(paymentRepository.findByReservationId(1L)).thenReturn(Optional.of(Payment.builder().id(1L).build()));
 
         // when
-        Payment result = paymentUseCase.processPayment(Reservation.builder().id(1L).paymentId(1L).build());
+        Payment result = paymentUsecase.processPayment(Reservation.builder().id(1L).paymentId(1L).build());
         // then
         assertNotNull(result);
         assertEquals(1L, result.getId()); // 기본 값 검증

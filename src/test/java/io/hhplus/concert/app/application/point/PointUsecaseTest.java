@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PointUseCaseTest {
+class PointUsecaseTest {
 
     @InjectMocks
     private PointService pointUseCase;

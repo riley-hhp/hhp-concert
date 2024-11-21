@@ -1,7 +1,7 @@
-package io.hhplus.concert.app.infra.event;
+package io.hhplus.concert.app.interfaces.consumer.event;
 
 import io.hhplus.concert.app.domain.concert.Reservation;
-import io.hhplus.concert.app.domain.event.ConcertEventListener;
+import io.hhplus.concert.app.application.concert.ConcertEventListener;
 import jdk.jfr.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -11,7 +11,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j
 @Component
-public class ConcertCoreEventListener implements ConcertEventListener<Event> {
+public class ConcertSpringEventListener implements ConcertEventListener<Event> {
 
     @Async
     @Override

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class WaitingQueueService implements WaitingQueueUseCase {
+public class WaitingQueueService implements WaitingQueueUsecase {
 
     private final WaitingQueueRepository waitingQueRepository;
 

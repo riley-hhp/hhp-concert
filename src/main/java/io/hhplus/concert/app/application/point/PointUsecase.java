@@ -1,6 +1,6 @@
 package io.hhplus.concert.app.application.point;
 
-public interface PointUseCase {
+public interface PointUsecase {
 
     // 포인트 조회
     public int getUserPoints(long userId);

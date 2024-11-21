@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName(value = "WaitingQueueService 단위 테스트")
 @ExtendWith(MockitoExtension.class)
-class WaitingQueueUseCaseTest {
+class WaitingQueueUsecaseTest {
 
     @Mock
     WaitingQueueRepository waitingQueueRepository;

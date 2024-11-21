@@ -1,6 +1,6 @@
 package io.hhplus.concert.app.application.concurrency;
 
-import io.hhplus.concert.app.application.concert.ConcertUseCase;
+import io.hhplus.concert.app.application.concert.ConcertUsecase;
 import io.hhplus.concert.app.application.point.PointService;
 import io.hhplus.concert.app.domain.concert.ConcertRepository;
 import io.hhplus.concert.app.domain.concert.Reservation;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ConcurrencyTest {
 
     @Autowired
-    private ConcertUseCase concertUseCase;
+    private ConcertUsecase concertUseCase;
     @Autowired
     private ConcertRepository concertRepository;
     @Autowired

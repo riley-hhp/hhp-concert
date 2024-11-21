@@ -2,7 +2,7 @@ package io.hhplus.concert.app.application.waitingqueue;
 
 import io.hhplus.concert.app.domain.waitingqueue.WaitingQueue;
 
-public interface WaitingQueueUseCase {
+public interface WaitingQueueUsecase {
 
     //토큰 발급
     public WaitingQueue issueToken(Long concertId);

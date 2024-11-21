@@ -3,10 +3,7 @@ package io.hhplus.concert.app.domain.concert;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.hhplus.concert.config.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +28,7 @@ public class Concert extends BaseTimeEntity {
         this.title = title;
     }
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "concert")
     @JsonManagedReference
     List<ConcertItem> concertItem;

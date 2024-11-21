@@ -1,24 +1,22 @@
 package io.hhplus.concert.app.application.concert;
 
-import io.hhplus.concert.app.application.payment.PaymentFacade;
+import io.hhplus.concert.app.application.payment.PaymentCoreUsecase;
 import io.hhplus.concert.app.domain.concert.*;
-import io.hhplus.concert.app.domain.event.ConcertEventPublisher;
 import io.hhplus.concert.app.domain.payment.Payment;
 import io.hhplus.concert.config.lock.DistributedLock;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ConcertFacade implements ConcertUseCase {
+public class ConcertCoreUsecase implements ConcertUsecase {
 
     private final ConcertRepository concertRepository;
-    private final PaymentFacade paymentFacade;
+    private final PaymentCoreUsecase paymentCoreUsecase;
     private final ConcertEventPublisher concertEventPublisher;
 
     // 예약 가능 날짜 조회 API
@@ -43,7 +41,7 @@ public class ConcertFacade implements ConcertUseCase {
         Reservation reservation = concertRepository.createTemporaryReservation(userId, concertItemId, seatId);
 
         // 결제 처리
-        Payment payment = paymentFacade.processPayment(reservation);
+        Payment payment = paymentCoreUsecase.processPayment(reservation);
 
         // 결제 성공 확인 후 예약 확정
         Reservation confirmed = concertRepository.confirmReservation(reservation.getId(), payment);

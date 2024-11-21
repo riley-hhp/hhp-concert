@@ -1,4 +1,4 @@
-package io.hhplus.concert.app.domain.event;
+package io.hhplus.concert.app.application.concert;
 
 import io.hhplus.concert.app.domain.concert.Reservation;
 import jdk.jfr.Event;

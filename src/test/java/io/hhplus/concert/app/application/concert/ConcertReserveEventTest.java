@@ -1,10 +1,9 @@
 package io.hhplus.concert.app.application.concert;
 
-import io.hhplus.concert.app.application.payment.PaymentFacade;
+import io.hhplus.concert.app.application.payment.PaymentCoreUsecase;
 import io.hhplus.concert.app.domain.concert.ConcertRepository;
 import io.hhplus.concert.app.domain.concert.Reservation;
 import io.hhplus.concert.app.domain.concert.ReservationStatus;
-import io.hhplus.concert.app.domain.event.ConcertEventPublisher;
 import io.hhplus.concert.app.domain.payment.Payment;
 import io.hhplus.concert.app.domain.payment.PaymentStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,13 +27,13 @@ public class ConcertReserveEventTest {
     private ConcertRepository concertRepository;
 
     @Mock
-    private PaymentFacade paymentFacade;
+    private PaymentCoreUsecase paymentUseCaseCoreUsecase;
 
     @Mock
     private ConcertEventPublisher concertEventPublisher;
 
     @InjectMocks
-    private ConcertFacade concertFacade;
+    private ConcertCoreUsecase concertCoreUsecase;
 
     @BeforeEach
     void setUp() {
@@ -84,15 +83,15 @@ public class ConcertReserveEventTest {
 
         // Mock
         when(concertRepository.createTemporaryReservation(userId, concertItemId, seatId)).thenReturn(temporaryReservation);
-        when(paymentFacade.processPayment(temporaryReservation)).thenReturn(payment);
+        when(paymentUseCaseCoreUsecase.processPayment(temporaryReservation)).thenReturn(payment);
         when(concertRepository.confirmReservation(reservationId, payment)).thenReturn(confirmedReservation);
 
         // Execute
-        Reservation result = concertFacade.reserveSeatAndPay(userId, concertItemId, seatId);
+        Reservation result = concertCoreUsecase.reserveSeatAndPay(userId, concertItemId, seatId);
 
         // Verify
         verify(concertRepository).createTemporaryReservation(userId, concertItemId, seatId);
-        verify(paymentFacade).processPayment(temporaryReservation);
+        verify(paymentUseCaseCoreUsecase).processPayment(temporaryReservation);
         verify(concertRepository).confirmReservation(reservationId, payment);
         verify(concertEventPublisher).successReservation(confirmedReservation); // 이벤트 발행
 

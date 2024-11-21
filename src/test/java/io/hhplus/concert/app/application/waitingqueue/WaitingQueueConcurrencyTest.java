@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class WaitingQueueConcurrencyTest {
 
     @Autowired
-    private WaitingQueueUseCase waitingQueueUseCase;
+    private WaitingQueueUsecase waitingQueueUsecase;
 
     @Autowired
     private WaitingQueueRepository waitingQueueRepository;
@@ -46,7 +46,7 @@ public class WaitingQueueConcurrencyTest {
         for (int i = 0; i < THREAD_COUNT; i++) {
             executorService.submit(() -> {
                 try {
-                    waitingQueueUseCase.issueToken(concertId);  // 여러 스레드가 동시에 토큰 발급
+                    waitingQueueUsecase.issueToken(concertId);  // 여러 스레드가 동시에 토큰 발급
                 } finally {
                     latch.countDown();
                 }
@@ -70,14 +70,14 @@ public class WaitingQueueConcurrencyTest {
         // 먼저 토큰 발급
         Long concertId = 1L;
         for (int i = 0; i < THREAD_COUNT; i++) {
-            waitingQueueUseCase.issueToken(concertId);  // 미리 토큰 발급
+            waitingQueueUsecase.issueToken(concertId);  // 미리 토큰 발급
         }
 
         // 동시에 토큰 활성화
         for (int i = 0; i < THREAD_COUNT; i++) {
             executorService.submit(() -> {
                 try {
-                    waitingQueueUseCase.activeToken();  // 여러 스레드가 동시에 토큰 활성화
+                    waitingQueueUsecase.activeToken();  // 여러 스레드가 동시에 토큰 활성화
                 } finally {
                     latch.countDown();
                 }
@@ -113,7 +113,7 @@ public class WaitingQueueConcurrencyTest {
         for (int i = 0; i < THREAD_COUNT; i++) {
             executorService.submit(() -> {
                 try {
-                    waitingQueueUseCase.expireToken();  // 여러 스레드가 동시에 토큰 만료 처리
+                    waitingQueueUsecase.expireToken();  // 여러 스레드가 동시에 토큰 만료 처리
                 } finally {
                     latch.countDown();
                 }

@@ -15,8 +15,6 @@ import org.springframework.cache.CacheManager;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @DisplayName("레디스 캐시 테스트")
@@ -24,7 +22,7 @@ import static org.mockito.Mockito.*;
 public class RedisCacheTest {
 
     @Autowired
-    private ConcertUseCase concertUseCase;
+    private ConcertUsecase concertUseCase;
 
     @MockBean
     private ConcertRepository concertRepository;

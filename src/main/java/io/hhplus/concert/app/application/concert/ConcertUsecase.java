@@ -6,7 +6,7 @@ import io.hhplus.concert.app.domain.concert.Seat;
 
 import java.util.List;
 
-public interface ConcertUseCase {
+public interface ConcertUsecase {
 
 
     // 예약 가능 날짜 조회 API
