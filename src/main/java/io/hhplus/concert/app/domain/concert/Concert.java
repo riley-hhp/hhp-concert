@@ -1,5 +1,6 @@
 package io.hhplus.concert.app.domain.concert;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.hhplus.concert.config.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,7 @@ public class Concert extends BaseTimeEntity {
     }
 
     @OneToMany(mappedBy = "concert")
+    @JsonManagedReference
     List<ConcertItem> concertItem;
 
     public void addConcertItem(ConcertItem concertItem) {

@@ -1,5 +1,6 @@
 package io.hhplus.concert.app.domain.concert;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.hhplus.concert.config.BaseTimeEntity; import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,13 +25,10 @@ public class ConcertItem extends BaseTimeEntity {
     String location;
     Integer capacity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CONCERT_ID")
-    @ToString.Exclude
+    @JsonBackReference
     Concert concert;
-
-    @OneToMany(mappedBy = "concertItem")
-    List<Seat> seats = new ArrayList<>();
 
     public ConcertItem(long l, Concert concert) {
         this.id = l;

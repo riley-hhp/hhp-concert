@@ -1,5 +1,6 @@
 package io.hhplus.concert.app.domain.concert;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.hhplus.concert.config.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,9 +24,9 @@ public class Seat extends BaseTimeEntity {
     SeatStatus status;
     double price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CONCERT_ITEM_ID")
-    @ToString.Exclude
+    @JsonBackReference
     ConcertItem concertItem;
 
     @Version

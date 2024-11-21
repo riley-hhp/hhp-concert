@@ -41,6 +41,7 @@ dependencies {
     implementation ("org.redisson:redisson-spring-boot-starter:3.27.1")
     implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
 
+    runtimeOnly ("com.mysql:mysql-connector-j")
 }
 
 // about source and compilation
