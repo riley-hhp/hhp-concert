@@ -1,5 +1,6 @@
 package io.hhplus.concert.app.application.concert;
 
+import io.hhplus.concert.app.config.TestContainerSupport;
 import io.hhplus.concert.app.domain.concert.*;
 import io.hhplus.concert.app.interfaces.consumer.event.ConcertSpringEventListener;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.verify;
 @DisplayName("콘서트 예약 통합테스트")
 @SpringBootTest
 @Transactional
-class ConcertUsecaseIntegrationTest {
+class ConcertUsecaseIntegrationTest extends TestContainerSupport {
 
     @Autowired
     private ConcertUsecase concertUseCase;
