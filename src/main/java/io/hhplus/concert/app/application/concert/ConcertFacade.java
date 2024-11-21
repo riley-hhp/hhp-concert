@@ -2,6 +2,7 @@ package io.hhplus.concert.app.application.concert;
 
 import io.hhplus.concert.app.application.payment.PaymentFacade;
 import io.hhplus.concert.app.domain.concert.*;
+import io.hhplus.concert.app.domain.event.ConcertEventPublisher;
 import io.hhplus.concert.app.domain.payment.Payment;
 import io.hhplus.concert.config.lock.DistributedLock;
 import jakarta.transaction.Transactional;
@@ -18,6 +19,7 @@ public class ConcertFacade implements ConcertUseCase {
 
     private final ConcertRepository concertRepository;
     private final PaymentFacade paymentFacade;
+    private final ConcertEventPublisher concertEventPublisher;
 
     // 예약 가능 날짜 조회 API
     @Cacheable(value = "concerts", key = "#concertId")
@@ -44,7 +46,11 @@ public class ConcertFacade implements ConcertUseCase {
         Payment payment = paymentFacade.processPayment(reservation);
 
         // 결제 성공 확인 후 예약 확정
-        return concertRepository.confirmReservation(reservation.getId(), payment);
+        Reservation confirmed = concertRepository.confirmReservation(reservation.getId(), payment);
+
+        // 예약 성공시 처리될 부가적인 외부로직(이벤트발행)
+        concertEventPublisher.successReservation(confirmed);
+        return confirmed;
     }
 
     // 5분 이내 결제가 이루어지지 않은 가예약을 취소
