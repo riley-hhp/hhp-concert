@@ -1,0 +1,89 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:mysql://localhost:3307/app_db  # MySQL 컨테이너 이름(app-mysql)과 포트(3306), DB 이름(app_db)를 사용
+    username: app_user  # 도커 설정에서 정의한 사용자명
+    password: app_password  # 도커 설정에서 정의한 사용자 비밀번호
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10  # 최대 커넥션 풀 크기 설정 (필요에 따라 조정)
+      minimum-idle: 5        # 최소 유휴 커넥션 풀 크기 설정
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialects: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    database: mysql
+    generate-ddl: true
+    open-in-view: false
+    show-sql: true
+    defer-datasource-initialization: true # 데이터 베이스 초기화 시점을 지연
+
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      data-locations: classpath:sql/data.sql
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  kafka:
+    server: localhost:9092
+    topic:
+      reservation: reservation_success
+    consumer:
+      auto-offset-reset: earliest
+      reservation:
+        group-id: reservation_consumer
+
+logging:
+  level:
+    root: ERROR
+    org:
+      apache:
+        kafka: INFO       # Kafka 관련 로그 레벨을 INFO로 설정
+      kafka:
+        consumer: ERROR     # Kafka Consumer 로그 레벨을 ERROR로 설정
+        producer: ERROR     # Kafka Producer 로그 레벨을 ERROR로 설정
+        server: ERROR       # Kafka Server 로그 레벨을 ERROR로 설정
+    io:
+      hhplus:
+        concert:
+          app:
+            infra:
+              spring: DEBUG # 해당 패키지로 지정
+
+  management:
+    # Actuator Port
+    server:
+      port: 9200
+
+    # endpoint 활성화/비활성화
+    endpoint:
+      health:
+        enabled: false
+
+    # endpoint 노출
+    endpoints:
+      web:
+        exposure:
+          include: "*"
+          exclude: "env,beans,info,configprops"
+
+  # tomcat 관련 지표 활성화
+  server:
+    tomcat:
+      mbeanregistry:
+        enabled: true

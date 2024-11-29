@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 15s  # Prometheus가 데이터를 가져올 주기
+  evaluation_interval: 15s  # 규칙 평가 주기
+
+scrape_configs:
+  # Prometheus 자체 모니터링
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:9090']  # Prometheus 서버 자체
+
+  # Spring Boot 애플리케이션 모니터링
+  - job_name: 'spring-boot-app'
+    metrics_path: '/actuator/prometheus'  # Spring Boot의 actuator에서 Prometheus용 엔드포인트
+    static_configs:
+      - targets: ['host.docker.internal:8080']  # 도커 네트워크 내의 컨테이너 이름과 포트
+
+  # Kafka 브로커 모니터링
+  - job_name: 'kafka'
+    static_configs:
+      - targets: ['host.docker.internal:9092']  # Kafka 브로커 주소
+
+  - job_name: 'k6'  # k6 부하 테스트 데이터 소스
+    static_configs:
+      - targets: ['host.docker.internal:6565']  # k6의 포트
