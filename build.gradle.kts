@@ -23,6 +23,8 @@ dependencyManagement {
 
 dependencies {
     implementation(libs.spring.boot.starter.web)
+    testImplementation (libs.lombok)
+    testAnnotationProcessor(libs.lombok)
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
     annotationProcessor(libs.spring.boot.configuration.processor)
@@ -31,6 +33,7 @@ dependencies {
     implementation ("org.springframework.boot:spring-boot-starter-jdbc")
     runtimeOnly ("com.h2database:h2")
     implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
+    testImplementation ("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1")
     implementation ("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1")
 
     // 낙관락 - 재시도
@@ -42,6 +45,17 @@ dependencies {
     implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
 
     runtimeOnly ("com.mysql:mysql-connector-j")
+
+    // testcontainer
+    testImplementation ("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation ("org.testcontainers:testcontainers:1.20.3")
+    testImplementation ("org.testcontainers:junit-jupiter:1.20.3")
+    testImplementation ("org.testcontainers:mysql:1.20.3")
+
+    // Kafka
+    implementation ("org.springframework.kafka:spring-kafka")
+    testImplementation("org.testcontainers:kafka:1.17.6")
+    testImplementation ("org.awaitility:awaitility:4.2.0")
 }
 
 // about source and compilation
